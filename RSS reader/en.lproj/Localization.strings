@@ -1,0 +1,27 @@
+/* 
+  Localization.strings
+  RSSreader
+
+  Created by n-naka on 2015/07/29.
+  Copyright (c) 2015年 forzaster. All rights reserved.
+*/
+"Ok"="OK";
+"Error"="ERROR";
+"Cancel"="CANCEL";
+"Channels"="Channels";
+"Articles"="Feed";
+"AddFeed"="Add Channel";
+"InputFeedUrl"="Input RSS URL.";
+"PullToUpdate"="Pull to update";
+"Updating"="Updating...";
+"CanNotAdd"="Can not add";
+"SuccessfullyAdded"="Successfully added";
+"Done"="Done";
+"AlreadyAdded"="Already added";
+"CanNotGetArticles"="Can not get articles";
+"CanNotAddErrorDescription"="Open RSS and click upper right + button";
+"Back"="Back";
+"Forward"="Forward";
+"FeedCheckResult"="This page is not RSS or supported.";
+"Delete"="Delete";
+"Share"="Share";

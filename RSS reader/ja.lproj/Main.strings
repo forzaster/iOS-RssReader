@@ -1,0 +1,12 @@
+
+/* Class = "UITabBarItem"; title = "Search"; ObjectID = "Qc1-Er-k3i"; */
+"Qc1-Er-k3i.title" = "Web";
+
+/* Class = "UITabBarItem"; title = "Articles"; ObjectID = "acW-dT-cKf"; */
+"acW-dT-cKf.title" = "フィード";
+
+/* Class = "UITabBarItem"; title = "RSS"; ObjectID = "cPa-gy-q4n"; */
+"cPa-gy-q4n.title" = "チャンネル";
+
+/* Class = "UITabBarItem"; title = "Item"; ObjectID = "jNl-xV-Xsa"; */
+"jNl-xV-Xsa.title" = "Item";

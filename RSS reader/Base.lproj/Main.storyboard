@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <scenes>
+        <!--Articles View Controller-->
+        <scene sceneID="hNz-n2-bh7">
+            <objects>
+                <viewController id="9pv-A4-QxB" userLabel="Articles View Controller" customClass="ArticlesViewController" customModule="RSS_reader" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ia1-K6-d13"/>
+                        <viewControllerLayoutGuide type="bottom" id="4ug-Mw-9AY"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="0Bv-pj-4f3">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="0Bv-pj-4f3" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="64g-bT-n2D"/>
+                            <constraint firstAttribute="top" secondItem="0Bv-pj-4f3" secondAttribute="top" id="Icj-KK-WD1"/>
+                            <constraint firstAttribute="trailing" secondItem="0Bv-pj-4f3" secondAttribute="trailing" id="UnD-yO-B7V"/>
+                            <constraint firstItem="4ug-Mw-9AY" firstAttribute="bottom" secondItem="0Bv-pj-4f3" secondAttribute="bottom" id="VOF-QJ-SaW"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="E06-dM-2Tw"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="mTableView" destination="0Bv-pj-4f3" id="7jx-ge-mb1"/>
+                        <segue destination="dgh-0A-yIm" kind="show" identifier="toWebViewController" id="DaQ-5b-w0m"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1534" y="426"/>
+        </scene>
+        <!--Item-->
+        <scene sceneID="0dg-ts-a0J">
+            <objects>
+                <viewController id="dgh-0A-yIm" customClass="WebViewController" customModule="RSS_reader" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="eQf-6Y-LMM"/>
+                        <viewControllerLayoutGuide type="bottom" id="vn8-gg-dxA"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="FdL-hv-keD">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ywx-z0-OK7">
+                                <rect key="frame" x="0.0" y="64" width="600" height="492"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ywx-z0-OK7" firstAttribute="leading" secondItem="FdL-hv-keD" secondAttribute="leading" id="7Qs-Qo-Dr3"/>
+                            <constraint firstItem="ywx-z0-OK7" firstAttribute="top" secondItem="eQf-6Y-LMM" secondAttribute="top" id="9d1-lr-hwN"/>
+                            <constraint firstAttribute="trailing" secondItem="ywx-z0-OK7" secondAttribute="trailing" id="gCd-bb-OYN"/>
+                            <constraint firstItem="vn8-gg-dxA" firstAttribute="bottom" secondItem="ywx-z0-OK7" secondAttribute="bottom" id="tNt-Id-uCv"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="jNl-xV-Xsa"/>
+                    <navigationItem key="navigationItem" id="Wz1-jj-pXB"/>
+                    <connections>
+                        <outlet property="mWebView" destination="ywx-z0-OK7" id="FeV-JH-jww"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Izz-v6-dje" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2296" y="440"/>
+        </scene>
+        <!--Rss View Controller-->
+        <scene sceneID="wg7-f3-ORb">
+            <objects>
+                <viewController id="8rJ-Kc-sve" userLabel="Rss View Controller" customClass="RssViewController" customModule="RSS_reader" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="L7p-HK-0SC"/>
+                        <viewControllerLayoutGuide type="bottom" id="Djb-ko-YwX"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="QS5-Rx-YEW">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="NiK-2l-ZNs">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="NiK-2l-ZNs" firstAttribute="trailing" secondItem="QS5-Rx-YEW" secondAttribute="trailing" id="04T-uT-YkX"/>
+                            <constraint firstItem="NiK-2l-ZNs" firstAttribute="top" secondItem="QS5-Rx-YEW" secondAttribute="top" id="Bpr-U2-Uva"/>
+                            <constraint firstItem="NiK-2l-ZNs" firstAttribute="leading" secondItem="QS5-Rx-YEW" secondAttribute="leading" id="Eub-UB-ZVr"/>
+                            <constraint firstItem="Djb-ko-YwX" firstAttribute="bottom" secondItem="NiK-2l-ZNs" secondAttribute="bottom" id="iC9-RC-NE3"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="0SF-Hs-Pmd"/>
+                    <connections>
+                        <outlet property="mTableView" destination="NiK-2l-ZNs" id="XaJ-cf-gpf"/>
+                        <segue destination="9pv-A4-QxB" kind="show" identifier="toArticlesViewController" id="3GB-Ac-o3J"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1534" y="-276"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="yl2-sM-qoP">
+            <objects>
+                <tabBarController id="49e-Tb-3d3" sceneMemberID="viewController">
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="W28-zg-YXA">
+                        <rect key="frame" x="0.0" y="975" width="768" height="49"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="je2-j1-qjg" kind="relationship" relationship="viewControllers" id="cAo-A2-u7D"/>
+                        <segue destination="8rJ-if-LAA" kind="relationship" relationship="viewControllers" id="W9z-2z-YJH"/>
+                        <segue destination="qxH-kB-BxW" kind="relationship" relationship="viewControllers" id="bzg-75-mCK"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2" y="-52"/>
+        </scene>
+        <!--Feed-->
+        <scene sceneID="hln-2V-ZUl">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="je2-j1-qjg" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Feed" image="articles" id="acW-dT-cKf"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="49x-CP-3wV">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="9pv-A4-QxB" kind="relationship" relationship="rootViewController" id="ppc-m5-SLu"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="912-m3-iJl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="770" y="440"/>
+        </scene>
+        <!--Channels-->
+        <scene sceneID="yHu-xC-85c">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="8rJ-if-LAA" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Channels" image="rss" id="cPa-gy-q4n"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="bM8-zE-GfQ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="8rJ-Kc-sve" kind="relationship" relationship="rootViewController" id="PWo-JE-Bwq"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="waQ-gV-nMl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="770" y="-276"/>
+        </scene>
+        <!--Web-->
+        <scene sceneID="5ak-gc-hdf">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="qxH-kB-BxW" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Web" image="search" id="Qc1-Er-k3i"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="gQJ-zJ-K3U">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="dgh-0A-yIm" kind="relationship" relationship="rootViewController" id="fcz-GX-fQk"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YVr-MQ-L3I" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="770" y="1152"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="articles" width="30" height="30"/>
+        <image name="rss" width="30" height="30"/>
+        <image name="search" width="30" height="30"/>
+    </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="ppc-m5-SLu"/>
+        <segue reference="DaQ-5b-w0m"/>
+    </inferredMetricsTieBreakers>
+</document>

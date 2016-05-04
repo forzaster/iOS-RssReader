@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14E46" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="ArticleEntity" representedClassName="RSS_reader.ArticleEntity" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="detail" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="link" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="watched" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <relationship name="feed" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FeedEntity" inverseName="article" inverseEntity="FeedEntity" syncable="YES"/>
+    </entity>
+    <entity name="FeedEntity" representedClassName="RSS_reader.FeedEntity" syncable="YES">
+        <attribute name="date_added" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
+        <attribute name="link" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="page_link" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="article" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ArticleEntity" inverseName="feed" inverseEntity="ArticleEntity" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ArticleEntity" positionX="-54" positionY="18" width="128" height="133"/>
+        <element name="FeedEntity" positionX="-299" positionY="-24" width="128" height="118"/>
+    </elements>
+</model>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="launchicon" highlightedImage="launchicon" translatesAutoresizingMaskIntoConstraints="NO" id="dEK-fc-W5K">
+                    <rect key="frame" x="190" y="110" width="100" height="100"/>
+                </imageView>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RssFMG" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="kId-c2-rCX">
+                    <rect key="frame" x="171" y="220" width="138" height="40"/>
+                    <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="34"/>
+                    <color key="textColor" red="0.91575915404040409" green="0.46311846548447777" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="centerX" secondItem="dEK-fc-W5K" secondAttribute="centerX" id="1Yf-Xr-Hu1"/>
+                <constraint firstItem="kId-c2-rCX" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="140" id="1Zf-Oe-zWZ"/>
+                <constraint firstAttribute="centerX" secondItem="kId-c2-rCX" secondAttribute="centerX" id="3dw-Sb-OXM"/>
+                <constraint firstItem="kId-c2-rCX" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="bottom" multiplier="1/3" constant="1" id="5cJ-9S-tgC"/>
+                <constraint firstItem="kId-c2-rCX" firstAttribute="top" secondItem="dEK-fc-W5K" secondAttribute="bottom" constant="10" id="9Da-vA-gfQ"/>
+                <constraint firstItem="dEK-fc-W5K" firstAttribute="top" relation="greaterThanOrEqual" secondItem="kId-c2-rCX" secondAttribute="bottom" constant="7" id="9lI-T8-vrc"/>
+                <constraint firstAttribute="trailing" secondItem="dEK-fc-W5K" secondAttribute="trailing" constant="190" id="Dug-ii-Hpg"/>
+                <constraint firstAttribute="centerX" secondItem="kId-c2-rCX" secondAttribute="centerX" id="Koa-jz-hwk"/>
+                <constraint firstAttribute="trailing" secondItem="kId-c2-rCX" secondAttribute="trailing" constant="19" id="N4j-Zk-krz"/>
+                <constraint firstAttribute="centerY" secondItem="kId-c2-rCX" secondAttribute="centerY" id="PJH-z2-q2Q"/>
+                <constraint firstItem="kId-c2-rCX" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="PgM-mi-vFr"/>
+                <constraint firstItem="dEK-fc-W5K" firstAttribute="top" secondItem="kId-c2-rCX" secondAttribute="bottom" constant="10" id="Q2Q-yg-M9V"/>
+                <constraint firstItem="dEK-fc-W5K" firstAttribute="top" secondItem="kId-c2-rCX" secondAttribute="bottom" constant="10" id="YY7-3N-2ll"/>
+                <constraint firstItem="kId-c2-rCX" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" symbolic="YES" id="fvb-Df-36g"/>
+                <constraint firstItem="dEK-fc-W5K" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="190" id="jzp-ae-kIh"/>
+                <constraint firstAttribute="centerX" secondItem="kId-c2-rCX" secondAttribute="centerX" id="oLc-Hb-BGA"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="9lI-T8-vrc"/>
+                    <exclude reference="Dug-ii-Hpg"/>
+                    <exclude reference="Q2Q-yg-M9V"/>
+                    <exclude reference="YY7-3N-2ll"/>
+                    <exclude reference="jzp-ae-kIh"/>
+                    <exclude reference="1Zf-Oe-zWZ"/>
+                    <exclude reference="5cJ-9S-tgC"/>
+                    <exclude reference="Koa-jz-hwk"/>
+                    <exclude reference="N4j-Zk-krz"/>
+                    <exclude reference="PgM-mi-vFr"/>
+                    <exclude reference="fvb-Df-36g"/>
+                    <exclude reference="oLc-Hb-BGA"/>
+                </mask>
+            </variation>
+            <point key="canvasLocation" x="548" y="455"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="launchicon" width="100" height="100"/>
+    </resources>
+</document>

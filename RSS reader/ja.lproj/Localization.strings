@@ -1,0 +1,24 @@
+/* 
+  Localization.strings
+  RSSreader
+
+  Created by n-naka on 2015/07/29.
+  Copyright (c) 2015年 forzaster. All rights reserved.
+*/
+"Channels"="チャンネル";
+"Articles"="フィード";
+"AddFeed"="チャンネルの追加";
+"InputFeedUrl"="RSSのURLを入力してください。";
+"PullToUpdate"="引っ張って更新";
+"Updating"="更新中...";
+"CanNotAdd"="追加できません";
+"SuccessfullyAdded"="追加されました";
+"Done"="完了";
+"AlreadyAdded"="既に追加されています。";
+"CanNotGetArticles"="記事を取得できません。";
+"CanNotAddErrorDescription"="RSSを開いて画面右上の+ボタンを押してください。";
+"Back"="戻る";
+"Forward"="進む";
+"FeedCheckResult"="このページはRSSではありません。";
+"Delete"="削除";
+"Share"="共有";
