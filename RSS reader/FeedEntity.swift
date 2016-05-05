@@ -11,11 +11,11 @@ import CoreData
 
 class FeedEntity: NSManagedObject {
 
-    @NSManaged var date_added: NSDate
-    @NSManaged var last_modified: String
+    @NSManaged var date_added: NSDate?
+    @NSManaged var last_modified: String?
     @NSManaged var link: String
     @NSManaged var page_link: String
     @NSManaged var title: String
-    @NSManaged var article: NSSet
+    @NSManaged var article: NSSet?
 
 }

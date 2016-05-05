@@ -138,13 +138,19 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
         // Dispose of any resources that can be recreated.
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let adapter = mAdapter {
-            return adapter.getCount(section)
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        if (segue.identifier == "toWebViewController") {
+            let array = sender as! [String]
+            let link = array[0]
+            let title = array[1]
+            Log.d("prepareForSeque " + String(link))
+            let webVC: WebViewController = segue.destinationViewController as! WebViewController
+            webVC.hidesBottomBarWhenPushed = true
+            webVC.mUrlString = link
+            webVC.mTitle = title
         }
-        return 0
     }
-    
+
     func scrollViewDidScroll(scrollView: UIScrollView) {
         guard let navController = self.navigationController else {
             return
@@ -178,6 +184,13 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
 
         self.navigationController?.navigationBar.frame = CGRect(x:0, y:newY, width: rect.width, height: rect.height)
     }
+
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if let adapter = mAdapter {
+            return adapter.getCount(section)
+        }
+        return 0
+    }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if let adapter = mAdapter {
@@ -201,19 +214,6 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
-        if (segue.identifier == "toWebViewController") {
-            let array = sender as! [String]
-            let link = array[0]
-            let title = array[1]
-            Log.d("prepareForSeque " + String(link))
-            let webVC: WebViewController = segue.destinationViewController as! WebViewController
-            webVC.hidesBottomBarWhenPushed = true
-            webVC.mUrlString = link
-            webVC.mTitle = title
-        }
-    }
-    
     func showErrorMessage(message: String) {
         let alertController = UIAlertController(title: Localization.get(Localization.ERROR), message: message, preferredStyle: .Alert)
         let okAction = UIAlertAction(title: Localization.get(Localization.OK), style: .Default) {
@@ -221,6 +221,15 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
         }
         alertController.addAction(okAction)
         presentViewController(alertController, animated: true, completion: nil)
+    }
+    
+    func showLoading() {
+        let anim = CABasicAnimation(keyPath: "transform.rotation.z")
+        anim.toValue = M_PI / 180 * 360
+        anim.duration = 2
+        anim.repeatCount = Float.infinity
+        mLoading!.layer.addAnimation(anim, forKey: "rotateAnimation")
+        mLoading!.hidden = false
     }
     
     func refresh() {
@@ -238,15 +247,6 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
                 self.mTableView.reloadData()
             })
         }
-    }
-    
-    func showLoading() {
-        let anim = CABasicAnimation(keyPath: "transform.rotation.z")
-        anim.toValue = M_PI / 180 * 360
-        anim.duration = 2
-        anim.repeatCount = Float.infinity
-        mLoading!.layer.addAnimation(anim, forKey: "rotateAnimation")
-        mLoading!.hidden = false
     }
     
     func onAddClick(sender: UIButton) {
@@ -276,7 +276,7 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
-    class DBArticleItemAdapter: NSObject, PArticleItemAdapter {
+    private class DBArticleItemAdapter: NSObject, PArticleItemAdapter {
         
         private var mDateFormatter: NSDateFormatter = NSDateFormatter()
         
@@ -377,8 +377,7 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
-
-    class DirectArticleItemAdapter: NSObject, PArticleItemAdapter {
+    private class DirectArticleItemAdapter: NSObject, PArticleItemAdapter {
         
         private var mUrl: String;
         
