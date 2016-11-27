@@ -15,7 +15,7 @@ class FeedModelClient {
     static let RET_SUCCESS : Int = 0
     static let RET_SAVE_FEED_ALREADY_ADDED : Int = 1
     
-    private static let ARTICLE_MAX_NUMBER = 1000
+    fileprivate static let ARTICLE_MAX_NUMBER = 1000
     
     class Feed {
         var title: String?
@@ -28,7 +28,7 @@ class FeedModelClient {
         var title: String?
         var link: String?
         var detail: String?
-        var date: NSDate?
+        var date: Date?
         var feedTitle: String?
         var feedLink: String?
         var watched: Bool = false
@@ -36,32 +36,32 @@ class FeedModelClient {
     
     static var sInstance : FeedModelClient = FeedModelClient()
     
-    private var mDateFormatter: NSDateFormatter = NSDateFormatter()
+    fileprivate var mDateFormatter: DateFormatter = DateFormatter()
     
-    private var mPubDateFormatter: NSDateFormatter = NSDateFormatter()
+    fileprivate var mPubDateFormatter: DateFormatter = DateFormatter()
 
-    private var mFeedArray: [NSManagedObject]? = nil
+    fileprivate var mFeedArray: [NSManagedObject]? = nil
     
-    private var mArticleArray: [ArticleEntity]? = nil
+    fileprivate var mArticleArray: [ArticleEntity]? = nil
     
-    private var mSpecificArticleArray: [ArticleEntity]? = nil
+    fileprivate var mSpecificArticleArray: [ArticleEntity]? = nil
     
-    private var mWorkerQueue: NSOperationQueue;
+    fileprivate var mWorkerQueue: OperationQueue;
     
-    private var mMainQueue: NSOperationQueue;
+    fileprivate var mMainQueue: OperationQueue;
     
-    private var mUpdateCount: Int = 0
+    fileprivate var mUpdateCount: Int = 0
 
     init() {
-        mWorkerQueue = NSOperationQueue()
+        mWorkerQueue = OperationQueue()
         mWorkerQueue.maxConcurrentOperationCount = 1
-        mMainQueue = NSOperationQueue.mainQueue()
+        mMainQueue = OperationQueue.main
         mMainQueue.maxConcurrentOperationCount = 1
         mDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         mPubDateFormatter.dateFormat = "dd MM yyyy HH:mm:ss"
     }
     
-    func deleteFeed(pos: Int, callback: (Int) -> Void) {
+    func deleteFeed(_ pos: Int, callback: @escaping (Int) -> Void) {
         guard let feed = getFeed(pos) else {
             callback(FeedModelClient.RET_ERROR)
             return
@@ -80,7 +80,7 @@ class FeedModelClient {
         mWorkerQueue.addOperation(operation)
     }
 
-    func watchedArticle(feedLink: String, data: Article, callback: (Int) -> Void) {
+    func watchedArticle(_ feedLink: String, data: Article, callback: @escaping (Int) -> Void) {
         let operation = WatchedOperation(mainQueue: mMainQueue, feedLink: feedLink, data: data, watched: true, callback: {(ret: Int, articles: [ArticleEntity]?) -> Void in
             if (articles != nil) {
                 self.mArticleArray = articles
@@ -90,7 +90,7 @@ class FeedModelClient {
         mWorkerQueue.addOperation(operation)
     }
     
-    func fetchFeeds(callback: (Int) -> Void) {
+    func fetchFeeds(_ callback: @escaping (Int) -> Void) {
         let operation = FetchFeedsOperation(mainQueue: mMainQueue, callback: {
             (ret: Int, feeds: [NSManagedObject]?) -> Void in
                 if let fs = feeds {
@@ -101,7 +101,7 @@ class FeedModelClient {
         mWorkerQueue.addOperation(operation)
     }
 
-    func fetchArticles(feedUrl: String?, callback: (Int) -> Void) {
+    func fetchArticles(_ feedUrl: String?, callback: @escaping (Int) -> Void) {
         let callback = {
             (ret: Int, articles: [ArticleEntity]?) -> Void in
             if let articles_ = articles {
@@ -113,7 +113,7 @@ class FeedModelClient {
             }
             callback(ret)
         }
-        var operation: NSOperation
+        var operation: Operation
         if let furl = feedUrl {
             operation = FetchArticlesOperation(mainQueue: mMainQueue, feedUrl: furl, callback: callback)
         } else {
@@ -133,7 +133,7 @@ class FeedModelClient {
         return array.count
     }
     
-    func getFeed(pos: Int) -> Feed? {
+    func getFeed(_ pos: Int) -> Feed? {
         guard var array = mFeedArray else {
             return nil
         }
@@ -159,7 +159,7 @@ class FeedModelClient {
         return ret
     }
     
-    func getArticleCount(feedUrl: String?) -> Int {
+    func getArticleCount(_ feedUrl: String?) -> Int {
         var array_: [NSManagedObject]?
         if let _ = feedUrl {
             array_ = mSpecificArticleArray
@@ -172,7 +172,7 @@ class FeedModelClient {
         return 0
     }
     
-    func getArticle(feedUrl: String?, pos: Int) -> Article? {
+    func getArticle(_ feedUrl: String?, pos: Int) -> Article? {
         var array_: [ArticleEntity]?
         if let _ = feedUrl {
             array_ = mSpecificArticleArray
@@ -190,7 +190,7 @@ class FeedModelClient {
         article.title = obj.title
         article.link = obj.link
         article.detail = obj.detail
-        article.date = obj.date
+        article.date = obj.date as Date
         if let watched = obj.watched {
             article.watched = watched as Bool
         } else {
@@ -210,7 +210,7 @@ class FeedModelClient {
         return article
     }
     
-    func updateAll(callback: (Int) -> Void) {
+    func updateAll(_ callback: @escaping (Int) -> Void) {
         let operation = UpdateAllOperation(mainQueue: mMainQueue, dateFormatter: mDateFormatter, pubDateFormatter: mPubDateFormatter, callback: {(ret: Int, articles: [ArticleEntity]?) -> Void in
             if (articles != nil) {
                 self.mArticleArray = articles
@@ -220,7 +220,7 @@ class FeedModelClient {
         mWorkerQueue.addOperation(operation)
     }
     
-    func saveFeed(url: String, callback: (Int, String?) -> Void) {
+    func saveFeed(_ url: String, callback: @escaping (Int, String?) -> Void) {
         let count = getFeedCount()
         for i in 0 ..< count {
             let feed = getFeed(i)
@@ -239,7 +239,7 @@ class FeedModelClient {
         mWorkerQueue.addOperation(operation)
     }
     
-    private static func getFeedFromObj(obj: NSManagedObject) -> Feed {
+    fileprivate static func getFeedFromObj(_ obj: NSManagedObject) -> Feed {
         let feed: Feed = Feed()
         if let feedObj = obj as? FeedEntity {
             feed.title = feedObj.title
@@ -250,14 +250,14 @@ class FeedModelClient {
         return feed
     }
   
-    private func getFeedEntity(link: String, managedContext: NSManagedObjectContext) -> NSManagedObject? {
-        let fetchRequest = NSFetchRequest(entityName: "FeedEntity")
+    fileprivate func getFeedEntity(_ link: String, managedContext: NSManagedObjectContext) -> NSManagedObject? {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FeedEntity")
         fetchRequest.predicate = NSPredicate(format: "link = %@", link)
         
         /* Get result array from ManagedObjectContext */
         let array_: [AnyObject]?
         do {
-            array_ = try managedContext.executeFetchRequest(fetchRequest)
+            array_ = try managedContext.fetch(fetchRequest)
         } catch _ as NSError {
             array_ = nil
         }
@@ -272,15 +272,15 @@ class FeedModelClient {
     
     class DeleteOperation: WorkerOperation {
         
-        private let mFeed: Feed
+        fileprivate let mFeed: Feed
         
-        private var mFeeds: [NSManagedObject]? = nil
+        fileprivate var mFeeds: [NSManagedObject]? = nil
         
-        private var mCallback: (Int, [NSManagedObject]?) -> Void
+        fileprivate var mCallback: (Int, [NSManagedObject]?) -> Void
         
-        private var mError = FeedModelClient.RET_SUCCESS
+        fileprivate var mError = FeedModelClient.RET_SUCCESS
         
-        init(mainQueue: NSOperationQueue, feed: Feed, callback: (ret: Int, feeds: [NSManagedObject]?) -> Void) {
+        init(mainQueue: OperationQueue, feed: Feed, callback: @escaping (_ ret: Int, _ feeds: [NSManagedObject]?) -> Void) {
             mFeed = feed
             mCallback = callback
             super.init(mainQueue: mainQueue)
@@ -294,11 +294,11 @@ class FeedModelClient {
                 return
             }
 
-            managedContext.deleteObject(feedObject)
-            if let articles = feedObject.valueForKey("article") as? NSSet {
-                var all: [AnyObject] = articles.allObjects
+            managedContext.delete(feedObject)
+            if let articles = feedObject.value(forKey: "article") as? NSSet {
+                var all: [AnyObject] = articles.allObjects as [AnyObject]
                 for i in 0 ..< all.count {
-                    managedContext.deleteObject((all[i] as? NSManagedObject)!)
+                    managedContext.delete((all[i] as? NSManagedObject)!)
                 }
             }
             
@@ -322,17 +322,17 @@ class FeedModelClient {
 
     class WatchedOperation: WorkerOperation {
         
-        private let mFeedLink: String
+        fileprivate let mFeedLink: String
         
-        private let mArticle: Article
+        fileprivate let mArticle: Article
         
-        private let mWatched: Bool
+        fileprivate let mWatched: Bool
         
-        private let mCallback: (Int, [ArticleEntity]?) -> Void
+        fileprivate let mCallback: (Int, [ArticleEntity]?) -> Void
         
-        private var mArticles: [ArticleEntity]? = nil
+        fileprivate var mArticles: [ArticleEntity]? = nil
         
-        init(mainQueue: NSOperationQueue, feedLink: String, data: Article, watched: Bool, callback: (ret: Int, articles: [ArticleEntity]?) -> Void) {
+        init(mainQueue: OperationQueue, feedLink: String, data: Article, watched: Bool, callback: @escaping (_ ret: Int, _ articles: [ArticleEntity]?) -> Void) {
             mFeedLink = feedLink
             mArticle = data
             mWatched = watched
@@ -352,11 +352,11 @@ class FeedModelClient {
 
     class FetchFeedsOperation: WorkerOperation {
         
-        private let mCallback: (Int, [NSManagedObject]?) -> Void
+        fileprivate let mCallback: (Int, [NSManagedObject]?) -> Void
         
-        private var mFeeds: [NSManagedObject]? = nil
+        fileprivate var mFeeds: [NSManagedObject]? = nil
         
-        init(mainQueue: NSOperationQueue, callback: (ret: Int, feeds: [NSManagedObject]?) -> Void) {
+        init(mainQueue: OperationQueue, callback: @escaping (_ ret: Int, _ feeds: [NSManagedObject]?) -> Void) {
             mCallback = callback
             super.init(mainQueue: mainQueue)
         }
@@ -372,17 +372,17 @@ class FeedModelClient {
 
     class FetchArticlesOperation: WorkerOperation {
         
-        private let mCallback: (Int, [ArticleEntity]?) -> Void
+        fileprivate let mCallback: (Int, [ArticleEntity]?) -> Void
         
-        private var mFeedUrl: String? = nil
+        fileprivate var mFeedUrl: String? = nil
         
-        private var mArticles: [ArticleEntity]? = nil
+        fileprivate var mArticles: [ArticleEntity]? = nil
         
-        init(mainQueue: NSOperationQueue, callback: (ret: Int, articles: [ArticleEntity]?) -> Void) {
+        init(mainQueue: OperationQueue, callback: @escaping (_ ret: Int, _ articles: [ArticleEntity]?) -> Void) {
             mCallback = callback
             super.init(mainQueue: mainQueue)
         }
-        init(mainQueue: NSOperationQueue, feedUrl: String, callback: (ret: Int, articles: [ArticleEntity]?) -> Void) {
+        init(mainQueue: OperationQueue, feedUrl: String, callback: @escaping (_ ret: Int, _ articles: [ArticleEntity]?) -> Void) {
             mFeedUrl = feedUrl
             mCallback = callback
             super.init(mainQueue: mainQueue)
@@ -393,9 +393,9 @@ class FeedModelClient {
                 var feeds = fetchFeeds(feedUrl)
                 if (feeds != nil && feeds!.count > 0) {
                     let obj: NSManagedObject = feeds![0]
-                    if let articlesSet = obj.valueForKey("article") as? NSSet {
+                    if let articlesSet = obj.value(forKey: "article") as? NSSet {
                         let sortDesc: NSSortDescriptor = NSSortDescriptor(key: "date", ascending: false)
-                        let all = articlesSet.sortedArrayUsingDescriptors([sortDesc])
+                        let all = articlesSet.sortedArray(using: [sortDesc])
                         mArticles = all as? [ArticleEntity]
                     }
                 }
@@ -411,30 +411,30 @@ class FeedModelClient {
     
     class SaveFeedOperation: WorkerOperation {
         
-        private let mCallback: (Int, String?, [NSManagedObject]?) -> Void
+        fileprivate let mCallback: (Int, String?, [NSManagedObject]?) -> Void
         
-        private let mUrl: String
+        fileprivate let mUrl: String
         
-        private var mFeeds: [NSManagedObject]? = nil
+        fileprivate var mFeeds: [NSManagedObject]? = nil
         
-        private var mError: Int = FeedModelClient.RET_ERROR
+        fileprivate var mError: Int = FeedModelClient.RET_ERROR
         
-        private var mTitle: String? = nil
+        fileprivate var mTitle: String? = nil
 
-        init(mainQueue: NSOperationQueue, url: String, callback: (ret: Int, title: String?, feeds: [NSManagedObject]?) -> Void) {
+        init(mainQueue: OperationQueue, url: String, callback: @escaping (_ ret: Int, _ title: String?, _ feeds: [NSManagedObject]?) -> Void) {
             mUrl = url
             mCallback = callback
             super.init(mainQueue: mainQueue)
         }
         
         override func doInBackground() {
-            let url = NSURL(string: mUrl)
-            let request = NSURLRequest(URL: url!)
-            var response: NSURLResponse?
+            let url = URL(string: mUrl)
+            let request = URLRequest(url: url!)
+            var response: URLResponse?
             var err: NSError?
-            var data: NSData?
+            var data: Data?
             do {
-                data = try NSURLConnection.sendSynchronousRequest(request, returningResponse: &response)
+                data = try NSURLConnection.sendSynchronousRequest(request, returning: &response)
             } catch let error as NSError {
                 err = error
                 data = nil
@@ -461,7 +461,7 @@ class FeedModelClient {
             mCallback(mError, mTitle, mFeeds)
         }
         
-        private func saveFeed(title: String, link: String, page: String) -> Int {
+        fileprivate func saveFeed(_ title: String, link: String, page: String) -> Int {
             var ret = FeedModelClient.RET_SUCCESS
             let managedContext = getManagedContext()
             
@@ -469,8 +469,8 @@ class FeedModelClient {
             
             /* Create new ManagedObject */
             if (feedObject == nil) {
-                let entity = NSEntityDescription.entityForName("FeedEntity", inManagedObjectContext: managedContext)
-                feedObject = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
+                let entity = NSEntityDescription.entity(forEntityName: "FeedEntity", in: managedContext)
+                feedObject = NSManagedObject(entity: entity!, insertInto: managedContext)
             } else {
                 ret = FeedModelClient.RET_SAVE_FEED_ALREADY_ADDED
             }
@@ -500,15 +500,15 @@ class FeedModelClient {
     
     class UpdateAllOperation: WorkerOperation {
         
-        private let mCallback: (Int, [ArticleEntity]?) -> Void
+        fileprivate let mCallback: (Int, [ArticleEntity]?) -> Void
         
-        private let mDateFormatter: NSDateFormatter
+        fileprivate let mDateFormatter: DateFormatter
         
-        private let mPubDateFormatter: NSDateFormatter
+        fileprivate let mPubDateFormatter: DateFormatter
         
-        private var mArticles: [ArticleEntity]?
+        fileprivate var mArticles: [ArticleEntity]?
         
-        init(mainQueue: NSOperationQueue, dateFormatter: NSDateFormatter, pubDateFormatter: NSDateFormatter, callback: (ret: Int, articles: [ArticleEntity]?) -> Void) {
+        init(mainQueue: OperationQueue, dateFormatter: DateFormatter, pubDateFormatter: DateFormatter, callback: @escaping (_ ret: Int, _ articles: [ArticleEntity]?) -> Void) {
             mDateFormatter = dateFormatter
             mPubDateFormatter = pubDateFormatter
             mCallback = callback
@@ -529,23 +529,22 @@ class FeedModelClient {
             for i in 0 ..< feeds.count {
                 let feed = feeds[i]
                 if let feedlink = feed.link {
-                    let url = NSURL(string: feedlink)
-                    let request = NSURLRequest(URL: url!)
-                    var response: NSURLResponse?
+                    let url = URL(string: feedlink)
+                    let request = URLRequest(url: url!)
+                    var response: URLResponse?
                     var err: NSError?
-                    var data: NSData?
+                    var data: Data?
                     var lastModified: String?
                     do {
-                        data = try NSURLConnection.sendSynchronousRequest(request, returningResponse: &response)
-                        if let res = response as? NSHTTPURLResponse {
+                        data = try NSURLConnection.sendSynchronousRequest(request, returning: &response)
+                        if let res = response as? HTTPURLResponse {
                             var headers  = res.allHeaderFields
-                            if let lastModifiedVar = headers.removeValueForKey("Last-Modified") {
+                            if let lastModifiedVar = headers.removeValue(forKey: "Last-Modified") {
                                 lastModified = lastModifiedVar as? String
                                 if (feed.last_modified != nil && lastModified == feed.last_modified!) {
                                     Log.d(feed.title! + " is not updated, skip")
                                     continue
                                 }
-                                Log.d("LastModified " + String(lastModified!) + ", db=" + (feed.last_modified)!)
                             }
                         }
                     } catch let error as NSError {
@@ -574,10 +573,10 @@ class FeedModelClient {
         }
     }
     
-    class WorkerOperation : NSOperation {
-        private let mMainQueue: NSOperationQueue
+    class WorkerOperation : Operation {
+        fileprivate let mMainQueue: OperationQueue
         
-        init(mainQueue: NSOperationQueue) {
+        init(mainQueue: OperationQueue) {
             mMainQueue = mainQueue
         }
         
@@ -594,14 +593,14 @@ class FeedModelClient {
         func onDone() {
         }
         
-        func getFeedEntity(link: String, managedContext: NSManagedObjectContext) -> NSManagedObject? {
-            let fetchRequest = NSFetchRequest(entityName: "FeedEntity")
+        func getFeedEntity(_ link: String, managedContext: NSManagedObjectContext) -> NSManagedObject? {
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FeedEntity")
             fetchRequest.predicate = NSPredicate(format: "link = %@", link)
             
             /* Get result array from ManagedObjectContext */
             let array_: [AnyObject]?
             do {
-                array_ = try managedContext.executeFetchRequest(fetchRequest)
+                array_ = try managedContext.fetch(fetchRequest)
             } catch _ as NSError {
                 array_ = nil
             }
@@ -614,11 +613,11 @@ class FeedModelClient {
             return feedObject
         }
         
-        func fetchFeeds(feedUrl: String?) -> [NSManagedObject]? {
+        func fetchFeeds(_ feedUrl: String?) -> [NSManagedObject]? {
             let manageContext = getManagedContext()
             
             /* Set search conditions */
-            let fetchRequest = NSFetchRequest(entityName: "FeedEntity")
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FeedEntity")
             if (feedUrl != nil) {
                 fetchRequest.predicate = NSPredicate(format: "link = %@", feedUrl!)
             }
@@ -626,7 +625,7 @@ class FeedModelClient {
             /* Get result array from ManagedObjectContext */
             let array_: [AnyObject]?
             do {
-                array_ = try manageContext.executeFetchRequest(fetchRequest)
+                array_ = try manageContext.fetch(fetchRequest)
             } catch _ as NSError {
                 array_ = nil
             }
@@ -636,55 +635,55 @@ class FeedModelClient {
             return nil
         }
         
-        private func saveArticle(urlString: String, item: RssXmlParser.Item, dateFormatter: NSDateFormatter,
-                                 pubDateFormatter: NSDateFormatter, lastModified: String?) {
+        fileprivate func saveArticle(_ urlString: String, item: RssXmlParser.Item, dateFormatter: DateFormatter,
+                                 pubDateFormatter: DateFormatter, lastModified: String?) {
             let article: FeedModelClient.Article = FeedModelClient.Article()
             article.title = item.mTitle
             article.link = item.mLink
             
-            let date: NSDate?;
+            let date: Date?;
             if (item.mDate != "") {
                 var dateStr: NSString = NSString(string: item.mDate)
-                let range: NSRange = dateStr.rangeOfString("+")
+                let range: NSRange = dateStr.range(of: "+")
                 if (range.location != NSNotFound) {
-                    dateStr = dateStr.substringToIndex(range.location)
+                    dateStr = dateStr.substring(to: range.location) as NSString
                 }
-                date = dateFormatter.dateFromString(dateStr as String)
+                date = dateFormatter.date(from: dateStr as String)
             } else {
                 var dateStr: NSString = NSString(string: item.mPubDate)
                 
-                let range: NSRange = dateStr.rangeOfString("+")
+                let range: NSRange = dateStr.range(of: "+")
                 if (range.location != NSNotFound) {
-                    dateStr = dateStr.substringToIndex(range.location - 1)
+                    dateStr = dateStr.substring(to: range.location - 1) as NSString
                 }
-                let range_: NSRange = dateStr.rangeOfString("-")
+                let range_: NSRange = dateStr.range(of: "-")
                 if (range_.location != NSNotFound) {
-                    dateStr = dateStr.substringToIndex(range_.location - 1)
+                    dateStr = dateStr.substring(to: range_.location - 1) as NSString
                 }
                 
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("PST", withString: "")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("EST", withString: "")
+                dateStr = dateStr.replacingOccurrences(of: "PST", with: "") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "EST", with: "") as NSString
                 
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("Jan", withString: "01")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("Feb", withString: "02")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("Mar", withString: "03")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("Apr", withString: "04")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("May", withString: "05")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("Jun", withString: "06")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("Jul", withString: "07")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("Aug", withString: "08")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("Sep", withString: "09")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("Oct", withString: "10")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("Nov", withString: "11")
-                dateStr = dateStr.stringByReplacingOccurrencesOfString("Dec", withString: "12")
-                dateStr = dateStr.substringFromIndex(5)
-                date = pubDateFormatter.dateFromString(dateStr as String)
+                dateStr = dateStr.replacingOccurrences(of: "Jan", with: "01") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "Feb", with: "02") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "Mar", with: "03") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "Apr", with: "04") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "May", with: "05") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "Jun", with: "06") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "Jul", with: "07") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "Aug", with: "08") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "Sep", with: "09") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "Oct", with: "10") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "Nov", with: "11") as NSString
+                dateStr = dateStr.replacingOccurrences(of: "Dec", with: "12") as NSString
+                dateStr = dateStr.substring(from: 5) as NSString
+                date = pubDateFormatter.date(from: dateStr as String)
             }
             
             if (date != nil) {
                 article.date = date!
             } else {
-                article.date = NSDate()
+                article.date = Date()
             }
             
             article.detail = item.mDescription
@@ -693,7 +692,7 @@ class FeedModelClient {
         }
 
         
-        func saveArticle(feedLink: String, data: Article, setWatched: Bool, lastModified: String?) {
+        func saveArticle(_ feedLink: String, data: Article, setWatched: Bool, lastModified: String?) {
             if (data.link == nil) {
                 return
             }
@@ -701,8 +700,8 @@ class FeedModelClient {
             
             var currentFeed: NSManagedObject? = getFeedEntity(feedLink, managedContext: managedContext)
             if (currentFeed == nil) {
-                let feedEntity = NSEntityDescription.entityForName("FeedEntity", inManagedObjectContext: managedContext)
-                currentFeed = NSManagedObject(entity: feedEntity!, insertIntoManagedObjectContext: managedContext)
+                let feedEntity = NSEntityDescription.entity(forEntityName: "FeedEntity", in: managedContext)
+                currentFeed = NSManagedObject(entity: feedEntity!, insertInto: managedContext)
                 currentFeed?.setValue(feedLink, forKey: "link")
             }
             
@@ -710,13 +709,13 @@ class FeedModelClient {
                 currentFeed?.setValue(lastModified, forKey: "last_modified")
             }
             
-            let fetchRequest = NSFetchRequest(entityName: "ArticleEntity")
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ArticleEntity")
             fetchRequest.predicate = NSPredicate(format: "link = %@", data.link!)
             
             /* Get result array from ManagedObjectContext */
             let array: [AnyObject]?
             do {
-                array = try managedContext.executeFetchRequest(fetchRequest)
+                array = try managedContext.fetch(fetchRequest)
             } catch _ as NSError {
                 array = nil
             }
@@ -729,8 +728,8 @@ class FeedModelClient {
             
             /* Create new ManagedObject */
             if (articleObject == nil) {
-                let entity = NSEntityDescription.entityForName("ArticleEntity", inManagedObjectContext: managedContext)
-                articleObject = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
+                let entity = NSEntityDescription.entity(forEntityName: "ArticleEntity", in: managedContext)
+                articleObject = NSManagedObject(entity: entity!, insertInto: managedContext)
             }
             
             /* Set the name attribute using key-value coding */
@@ -738,7 +737,7 @@ class FeedModelClient {
             articleObject!.setValue(data.link, forKey: "link")
             articleObject!.setValue(data.detail, forKey: "detail")
             articleObject!.setValue(data.date, forKey: "date")
-            let obj: AnyObject? = articleObject!.valueForKey("watched")
+            let obj: AnyObject? = articleObject!.value(forKey: "watched") as AnyObject?
             if (setWatched) {
                 articleObject!.setValue(true, forKey: "watched")
             } else if (obj == nil) {
@@ -746,19 +745,19 @@ class FeedModelClient {
             }
             if (currentFeed != nil) {
                 let set: NSMutableSet = NSMutableSet()
-                set.addObject(currentFeed!)
+                set.add(currentFeed!)
                 articleObject!.setValue(set, forKey: "feed")
             }
             
             let updateSet: NSMutableSet = NSMutableSet()
-            let articlesSet: NSSet? = currentFeed?.valueForKey("article") as? NSSet
+            let articlesSet: NSSet? = currentFeed?.value(forKey: "article") as? NSSet
             if (articlesSet != nil) {
-                var all: [AnyObject]? = articlesSet?.allObjects
+                var all: [AnyObject]? = articlesSet?.allObjects as [AnyObject]?
                 if (all != nil) {
                     for i in 0 ..< all!.count {
                         let obj: NSManagedObject? = all![i] as? NSManagedObject
                         if (obj != nil) {
-                            updateSet.addObject(obj!)
+                            updateSet.add(obj!)
                         }
                     }
                 }
@@ -779,7 +778,7 @@ class FeedModelClient {
             let managedContext = getManagedContext()
             
             /* Set search conditions */
-            let fetchRequest = NSFetchRequest(entityName: "ArticleEntity")
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ArticleEntity")
             
             let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
             let sortDescriptors = [sortDescriptor]
@@ -788,7 +787,7 @@ class FeedModelClient {
             /* Get result array from ManagedObjectContext */
             let array: [AnyObject]?
             do {
-                array = try managedContext.executeFetchRequest(fetchRequest)
+                array = try managedContext.fetch(fetchRequest)
             } catch _ as NSError {
                 array = nil
             }
@@ -802,7 +801,7 @@ class FeedModelClient {
             let managedContext = getManagedContext()
             
             /* Set search conditions */
-            let fetchRequest = NSFetchRequest(entityName: "ArticleEntity")
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ArticleEntity")
             
             let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
             let sortDescriptors = [sortDescriptor]
@@ -812,7 +811,7 @@ class FeedModelClient {
             /* Get result array from ManagedObjectContext */
             let array: [AnyObject]?
             do {
-                array = try managedContext.executeFetchRequest(fetchRequest)
+                array = try managedContext.fetch(fetchRequest)
             } catch _ as NSError {
                 array = nil
             }
@@ -821,7 +820,7 @@ class FeedModelClient {
             }
             let deleteObjs = array as! [NSManagedObject]
             for obj in deleteObjs {
-                managedContext.deleteObject(obj)
+                managedContext.delete(obj)
             }
             
             do {
@@ -833,28 +832,28 @@ class FeedModelClient {
 
         func getManagedContext() -> NSManagedObjectContext {
             /* Get ManagedObjectContext from AppDelegate */
-            let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
             let managedContext: NSManagedObjectContext = appDelegate.managedObjectContext!
             return managedContext
         }
         
-        func downloadWithDataTask(url: NSURL) {
-            let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-            let task = session.dataTaskWithURL(url, completionHandler: {
-                (data: NSData?, response: NSURLResponse?, error: NSError?) in
+        func downloadWithDataTask(_ url: URL) {
+            let session = URLSession(configuration: URLSessionConfiguration.default)
+            let task = session.dataTask(with: url, completionHandler: {
+                (data: Data?, response: URLResponse?, error: NSError?) in
                 if (data != nil && error == nil) {
                     // do something
                 }
                 session.finishTasksAndInvalidate()
-            })
+            } as! (Data?, URLResponse?, Error?) -> Void)
             task.resume()
         }
     }
     
-    class MainOperation : NSOperation {
-        private var mCallback: () -> Void
+    class MainOperation : Operation {
+        fileprivate var mCallback: () -> Void
         
-        init(callback: () -> Void) {
+        init(callback: @escaping () -> Void) {
             mCallback = callback
         }
         

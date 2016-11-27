@@ -8,7 +8,7 @@
 
 import Foundation
 
-class RssXmlParser: NSObject, NSXMLParserDelegate {
+class RssXmlParser: NSObject, XMLParserDelegate {
     class Item {
         var mTitle: String = ""
         var mLink: String = ""
@@ -19,27 +19,27 @@ class RssXmlParser: NSObject, NSXMLParserDelegate {
         var mMediaMime: String = ""
     }
     
-    private let ROOT_TAG: [String] = ["rss", "rdf:RDF"]
+    fileprivate let ROOT_TAG: [String] = ["rss", "rdf:RDF"]
     
-    private var mParser: NSXMLParser
+    fileprivate var mParser: XMLParser
     
-    private var mCurrentItem: Item? = nil
+    fileprivate var mCurrentItem: Item? = nil
     
-    private var mCurrentTag: String? = nil
+    fileprivate var mCurrentTag: String? = nil
     
-    private var mItems: [Item] = []
+    fileprivate var mItems: [Item] = []
     
-    private var mTitle: String? = nil
+    fileprivate var mTitle: String? = nil
     
-    private var mLink: String? = nil
+    fileprivate var mLink: String? = nil
     
-    private var mParseTitle: Bool = false
+    fileprivate var mParseTitle: Bool = false
     
-    private var mRootTagOk: Bool = false
+    fileprivate var mRootTagOk: Bool = false
     
-    init(data: NSData) {
+    init(data: Data) {
         //Log.d(NSString(data:data, encoding:NSUTF8StringEncoding) as! String);
-        mParser = NSXMLParser(data: data)
+        mParser = XMLParser(data: data)
     }
     
     func parse() -> Bool {
@@ -51,7 +51,7 @@ class RssXmlParser: NSObject, NSXMLParserDelegate {
         return ret && mRootTagOk
     }
     
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         if (!mRootTagOk) {
             for i in 0 ..< ROOT_TAG.count {
                 if (ROOT_TAG[i] == elementName) {
@@ -73,7 +73,7 @@ class RssXmlParser: NSObject, NSXMLParserDelegate {
         }
     }
     
-    func parser(parser: NSXMLParser, foundCharacters string: String) {
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
         if (mCurrentItem != nil) {
             if (mCurrentTag == "title") {
                 mCurrentItem?.mTitle += string
@@ -100,7 +100,7 @@ class RssXmlParser: NSObject, NSXMLParserDelegate {
         }
     }
 
-    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if (elementName == "item" && mCurrentItem != nil) {
             mItems.append(mCurrentItem!)
             mCurrentItem = nil
@@ -111,11 +111,11 @@ class RssXmlParser: NSObject, NSXMLParserDelegate {
         mCurrentTag = nil
     }
 
-    func parser(parser: NSXMLParser, parseErrorOccurred error: NSError) {
-        Log.d("!!!!!!ERR : " + error.description)
+    func parser(_ parser: XMLParser, parseErrorOccurred error: Error) {
+        Log.d("!!!!!!ERR : " + error.localizedDescription)
     }
     
-    func getItem(pos: Int) -> Item? {
+    func getItem(_ pos: Int) -> Item? {
         if (pos < 0 || pos >= mItems.count) {
             return nil;
         }

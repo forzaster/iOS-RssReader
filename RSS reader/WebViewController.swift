@@ -7,15 +7,35 @@
 //
 
 import UIKit
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 
 protocol RssUrlRetriever {
-    func retrieve(url: NSURL) -> String?
+    func retrieve(_ url: URL) -> String?
 }
 
 class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegate {
     
-    private let DEFAULT_URL = "http://www.google.com"
+    fileprivate let DEFAULT_URL = "http://www.google.com"
     
     @IBOutlet weak var mWebView: UIWebView!
     
@@ -23,25 +43,25 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
     
     var mTitle: String? = nil
     
-    private var mAddButton: UIBarButtonItem?  = nil
+    fileprivate var mAddButton: UIBarButtonItem?  = nil
 
-    private var mActionButton: UIBarButtonItem?  = nil
+    fileprivate var mActionButton: UIBarButtonItem?  = nil
     
-    private var mRssUrl: String? = nil
+    fileprivate var mRssUrl: String? = nil
     
-    private var mAddressField: UITextField? = nil
+    fileprivate var mAddressField: UITextField? = nil
     
-    private var mWebButtons: WebButtons?
+    fileprivate var mWebButtons: WebButtons?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        mAddButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(WebViewController.onAddClick(_:)))
-        mActionButton = UIBarButtonItem(barButtonSystemItem: .Action, target: self, action: #selector(WebViewController.onActionClick(_:)))
+        mAddButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(WebViewController.onAddClick(_:)))
+        mActionButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(WebViewController.onActionClick(_:)))
         
         self.navigationItem.rightBarButtonItems = [
             mAddButton!,
-            UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: #selector(WebViewController.onSearchClick(_:))),
+            UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(WebViewController.onSearchClick(_:))),
             mActionButton!
         ]
         
@@ -50,13 +70,13 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
         let w = self.navigationController?.navigationBar.frame.width
         let h = self.navigationController?.navigationBar.frame.height
         mAddressField!.frame = CGRect(x: 0, y: margin, width: w!, height: h! / 2)
-        mAddressField!.font = UIFont.systemFontOfSize(h! / 2 - 4)
-        mAddressField!.borderStyle = UITextBorderStyle.RoundedRect
+        mAddressField!.font = UIFont.systemFont(ofSize: h! / 2 - 4)
+        mAddressField!.borderStyle = UITextBorderStyle.roundedRect
         mAddressField!.placeholder = mUrlString
-        mAddressField!.backgroundColor = UIColor.whiteColor()
+        mAddressField!.backgroundColor = UIColor.white
         mAddressField!.keyboardType = UIKeyboardType.URL
-        mAddressField!.returnKeyType = UIReturnKeyType.Go
-        mAddressField!.clearButtonMode = UITextFieldViewMode.WhileEditing
+        mAddressField!.returnKeyType = UIReturnKeyType.go
+        mAddressField!.clearButtonMode = UITextFieldViewMode.whileEditing
         mAddressField!.delegate = self
         mWebView.delegate = self
         
@@ -82,8 +102,8 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
 
         self.view.addSubview(mWebButtons!)
         
-        let url = NSURL(string: mUrlString!)
-        let req = NSURLRequest(URL: url!)
+        let url = URL(string: mUrlString!)
+        let req = URLRequest(url: url!)
         mWebView.loadRequest(req)
     }
     
@@ -93,7 +113,6 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
             bottomSize = CGFloat(self.bottomLayoutGuide.length)
             
         }
-        self.bottomLayoutGuide.length
         let padding: CGFloat = 4
         let bw: Int = 90
         let bh: Int = 30
@@ -107,29 +126,29 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
         super.didReceiveMemoryWarning()
     }
     
-    func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {
-        Log.d(error!.description)
-        if (error!.code != 102) {
+    func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
+        Log.d(error.localizedDescription)
+        if  (error as NSError).code == NSURLErrorCancelled {
             Log.d("load error")
             return
         }
         let url = mAddressField!.text
         Log.d("re-load " + url!)
-        HttpGetClient().get(url!, callback: {(data: NSData?, response: NSHTTPURLResponse?, error: NSError?) -> Void in
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        HttpGetClient().get(url!, callback: {(data: Data?, response: HTTPURLResponse?, error: NSError?) -> Void in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             var rssLoaded = false
             if (response != nil && response!.statusCode == 200 && data != nil) {
-                Log.d("GET mime=" + response!.MIMEType!)
-                let mime = response!.MIMEType
+                Log.d("GET mime=" + response!.mimeType!)
+                let mime = response!.mimeType
                 if (mime != nil) {
-                    let range1 = mime!.rangeOfString("xml", options: .CaseInsensitiveSearch)
-                    let range2 = mime!.rangeOfString("rss", options: .CaseInsensitiveSearch)
+                    let range1 = mime!.range(of: "xml", options: .caseInsensitive)
+                    let range2 = mime!.range(of: "rss", options: .caseInsensitive)
                      if ((range1 != nil && !range1!.isEmpty) && (range2 != nil && !range2!.isEmpty)) {
                         //Log.d(NSString(data:data!, encoding:NSUTF8StringEncoding) as! String)
-                        var xmlString = NSString(data:data!, encoding:NSUTF8StringEncoding) as! String
+                        var xmlString = NSString(data:data!, encoding:String.Encoding.utf8.rawValue) as! String
                         xmlString = "<pre>" + xmlString + "</pre>"
                         //self.mWebView.loadData(data!, MIMEType: "text/xml", textEncodingName: "utf-8", baseURL: nil)
-                        self.mWebView.loadHTMLString(xmlString, baseURL: NSURL(string: url!))
+                        self.mWebView.loadHTMLString(xmlString, baseURL: URL(string: url!))
                         rssLoaded = true
                     }
                 }
@@ -140,7 +159,7 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
         })
     }
     
-    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         
         let str = request.mainDocumentURL?.description
         if (str != nil) {
@@ -150,19 +169,19 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
         if (mRssUrl != nil) {
             Log.d("RSS candidate=" + mRssUrl!)
         }
-        if (request.URL?.scheme == "about") {
+        if (request.url?.scheme == "about") {
             Log.d("empty url request")
             return true
         }
-        if (str != nil && request.URL?.scheme == "feed") {
-            let newUrl = str?.stringByReplacingOccurrencesOfString("feed://", withString: "http://", options: [], range: nil)
+        if (str != nil && request.url?.scheme == "feed") {
+            let newUrl = str?.replacingOccurrences(of: "feed://", with: "http://", options: [], range: nil)
             if (newUrl != nil) {
                 HttpGetClient().get(newUrl!,
-                    callback: {(data: NSData?, response: NSHTTPURLResponse?, error: NSError?) -> Void in
+                    callback: {(data: Data?, response: HTTPURLResponse?, error: NSError?) -> Void in
                         if (response != nil && response!.statusCode == 200 && data != nil) {
-                            let xmlString = NSString(data:data!, encoding:NSUTF8StringEncoding) as! String
+                            let xmlString = NSString(data:data!, encoding:String.Encoding.utf8.rawValue) as! String
                             Log.d("result = " + xmlString)
-                            self.mWebView.loadHTMLString("<pre>" + xmlString + "</pre>", baseURL: NSURL(string: newUrl!))
+                            self.mWebView.loadHTMLString("<pre>" + xmlString + "</pre>", baseURL: URL(string: newUrl!))
                         }
                     })
             }
@@ -171,33 +190,33 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
         
         mUrlString = request.mainDocumentURL?.description
         mAddressField?.text = mUrlString
-        if (navigationType == UIWebViewNavigationType.LinkClicked) {
+        if (navigationType == UIWebViewNavigationType.linkClicked) {
             mTitle = nil
         }
-        mActionButton!.enabled = mUrlString != nil
+        mActionButton!.isEnabled = mUrlString != nil
         return true
     }
     
-    func webViewDidStartLoad(webView: UIWebView) {
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+    func webViewDidStartLoad(_ webView: UIWebView) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         Log.d("start load");
     }
     
-    func webViewDidFinishLoad(webView: UIWebView) {
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+    func webViewDidFinishLoad(_ webView: UIWebView) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
         mWebButtons?.setEnable(webView.canGoBack, isEnableRight: webView.canGoForward)
         Log.d("finish load");
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         let text = textField.text
         textField.resignFirstResponder()
         if (text == nil || text == "") {
             return false
         }
         mUrlString = text
-        let url = NSURL(string: text!)
-        let req = NSURLRequest(URL: url!)
+        let url = URL(string: text!)
+        let req = URLRequest(url: url!)
         Log.d("load " + text!)
         mWebView.loadRequest(req)
         return true
@@ -215,13 +234,13 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
         }
     }
     
-    func onSearchClick(sender: UIButton) {
-        let url = NSURL(string: DEFAULT_URL)
-        let req = NSURLRequest(URL: url!)
+    func onSearchClick(_ sender: UIButton) {
+        let url = URL(string: DEFAULT_URL)
+        let req = URLRequest(url: url!)
         mWebView.loadRequest(req)
     }
     
-    func onAddClick(sender: UIButton) {
+    func onAddClick(_ sender: UIButton) {
         var url = mRssUrl
         if (url == nil) {
             url = mUrlString
@@ -242,12 +261,12 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
                     (text) -> Void in
                         self.saveFeed(text)
                 })
-                self.presentViewController(alertController, animated: true, completion: nil)
+                self.present(alertController, animated: true, completion: nil)
             }
         })
     }
 
-    func saveFeed(url: String) {
+    func saveFeed(_ url: String) {
         FeedModelClient.sInstance.saveFeed(url, callback: {(error: Int, title: String?) -> Void in
             if (error == FeedModelClient.RET_SUCCESS) {
                 self.showMessage(Localization.get(Localization.DONE), message: Localization.get(Localization.SUCCESSFULLY_ADDED))
@@ -259,54 +278,54 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
         })
     }
     
-    func createErrorString(error: String) -> String {
+    func createErrorString(_ error: String) -> String {
         return error + "\n" + Localization.get(Localization.CAN_NOT_ADD_ERROR_DESCRIPTION)
     }
     
-    func showErrorMessage(message: String) {
+    func showErrorMessage(_ message: String) {
         showMessage(Localization.get(Localization.ERROR), message: message)
     }
 
-    func showMessage(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-        let okAction = UIAlertAction(title: Localization.get(Localization.OK), style: .Default) {
+    func showMessage(_ title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: Localization.get(Localization.OK), style: .default) {
             action in
         }
         alertController.addAction(okAction)
-        presentViewController(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
     }
     
-    func onActionClick(sender: UIButton) {
+    func onActionClick(_ sender: UIButton) {
         guard let urlStr = mUrlString else {
             self.showErrorMessage(Localization.get(Localization.SHARE) + " " + Localization.get(Localization.ERROR))
             return
         }
-        guard let url = NSURL(string: urlStr) else {
+        guard let url = URL(string: urlStr) else {
             self.showErrorMessage(Localization.get(Localization.SHARE) + " " + Localization.get(Localization.ERROR))
             return
         }
         var title = mTitle
         if (title == nil) {
-            title = mWebView.stringByEvaluatingJavaScriptFromString("document.title")
+            title = mWebView.stringByEvaluatingJavaScript(from: "document.title")
         }
         var items: [AnyObject]
         if let t = title {
-            items = [t, url]
+            items = [t as AnyObject, url as AnyObject]
         } else {
-            items = [url]
+            items = [url as AnyObject]
         }
         let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
-        activityViewController.excludedActivityTypes = [UIActivityTypePostToWeibo,
-                                                        UIActivityTypeSaveToCameraRoll]
-        presentViewController(activityViewController, animated: true, completion: nil)
+        activityViewController.excludedActivityTypes = [UIActivityType.postToWeibo,
+                                                        UIActivityType.saveToCameraRoll]
+        present(activityViewController, animated: true, completion: nil)
     }
     
     class URLChecker {
         
         class LiveDoorRss : RssUrlRetriever {
-            func retrieve(url: NSURL) -> String? {
+            func retrieve(_ url: URL) -> String? {
                 Log.d("retrieve livedoor blog " + url.absoluteString)
-                var path: [AnyObject]? = url.pathComponents
+                var path: [AnyObject]? = url.pathComponents as [AnyObject]?
                 if (path == nil) {
                     return nil
                 }
@@ -322,9 +341,9 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
         }
         
         class AmebloRss : RssUrlRetriever {
-            func retrieve(url: NSURL) -> String? {
+            func retrieve(_ url: URL) -> String? {
                 Log.d("retrieve ameblo blog " + url.absoluteString)
-                var path: [AnyObject]? = url.pathComponents
+                var path: [AnyObject]? = url.pathComponents as [AnyObject]?
                 if (path == nil) {
                     return nil
                 }
@@ -340,7 +359,7 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
         }
         
         class HatenaRss : RssUrlRetriever {
-            func retrieve(url: NSURL) -> String? {
+            func retrieve(_ url: URL) -> String? {
                 Log.d("retrieve hatena blog " + url.absoluteString)
                 Log.d("host=" + url.host!)
                 
@@ -372,38 +391,38 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
             HatenaRss(),
         ]
         
-        static func check(url: NSURL?, addButton: UIBarButtonItem) -> String? {
+        static func check(_ url: URL?, addButton: UIBarButtonItem) -> String? {
             if (url == nil) {
                 Log.d("Unsupport nil")
-                addButton.enabled = false
+                addButton.isEnabled = false
                 return nil;
             }
             let urlString: String? = url?.absoluteString
             if (urlString == nil) {
                 Log.d("Unsupport nil")
-                addButton.enabled = false
+                addButton.isEnabled = false
                 return nil;
             }
             for i in 0 ..< SUPPORT_URLS.count {
-                if ((urlString!).characters.startsWith(SUPPORT_URLS[i].characters)) {
+                if ((urlString!).characters.starts(with: SUPPORT_URLS[i].characters)) {
                     Log.d("Support " + urlString!)
-                    addButton.enabled = true
+                    addButton.isEnabled = true
                     return RETRIEVERS[i].retrieve(url!)
                 }
             }
             for i in 0 ..< SUPPORT_URLS_REGEX.count {
                 let regex = try? NSRegularExpression(pattern: SUPPORT_URLS_REGEX[i], options: [])
                 let range = NSMakeRange(0, (urlString! as NSString).length)
-                let matches = regex?.matchesInString(urlString!, options: [], range: range)
+                let matches = regex?.matches(in: urlString!, options: [], range: range)
                 if (matches?.count > 0) {
                     Log.d("Support regex !!! " + urlString!);
-                    addButton.enabled = true
+                    addButton.isEnabled = true
                     return RETRIEVERS_REGEX[i].retrieve(url!)
                 }
             }
             Log.d("Unsupport " + urlString!)
             //addButton.enabled = false
-            addButton.enabled = true
+            addButton.isEnabled = true
             return nil
         }
     }

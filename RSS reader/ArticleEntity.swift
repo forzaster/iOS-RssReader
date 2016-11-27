@@ -11,7 +11,7 @@ import CoreData
 
 class ArticleEntity: NSManagedObject {
 
-    @NSManaged var date: NSDate
+    @NSManaged var date: Date
     @NSManaged var detail: String?
     @NSManaged var link: String
     @NSManaged var media_mime: String?

@@ -10,25 +10,25 @@ import Foundation
 
 class HttpGetClient {
 
-    func get(urlStr: String, callback: (NSData?, NSHTTPURLResponse?, NSError?) -> Void) {
-        let targetUrl: NSURL = NSURL(string: urlStr)!
-        let session: NSURLSession = NSURLSession.sharedSession()
-        let task = session.dataTaskWithURL(targetUrl, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
-            let httpResponse = response as? NSHTTPURLResponse
+    func get(_ urlStr: String, callback: @escaping (Data?, HTTPURLResponse?, NSError?) -> Void) {
+        let targetUrl: URL = URL(string: urlStr)!
+        let session: URLSession = URLSession.shared
+        let task = session.dataTask(with: targetUrl, completionHandler: {(data: Data?, response: URLResponse?, error: NSError?) -> Void in
+            let httpResponse = response as? HTTPURLResponse
             if (error != nil) {
                 Log.d((error?.description)!)
             }
             if (httpResponse != nil) {
                 Log.d("status=" + String(stringInterpolationSegment: httpResponse?.statusCode))
-                if (httpResponse!.MIMEType != nil) {
-                    Log.d("type=" + httpResponse!.MIMEType!)
+                if (httpResponse!.mimeType != nil) {
+                    Log.d("type=" + httpResponse!.mimeType!)
                 }
             }
 
-            NSOperationQueue.mainQueue().addOperation(NSBlockOperation(block: { () -> Void in
+            OperationQueue.main.addOperation(BlockOperation(block: { () -> Void in
                 callback(data, httpResponse, error)
             }))
-        })
+        } as! (Data?, URLResponse?, Error?) -> Void)
         task.resume()
     }
 }

@@ -32,11 +32,11 @@ class Localization {
     static let DELETE: String = "Delete"
     static let SHARE: String = "Share"
     
-    static func get(str: String) -> String {
+    static func get(_ str: String) -> String {
         return NSLocalizedString(str, tableName: "Localization", comment: str)
     }
     
-    static func getTitlePlusMessage(title: String?, str: String) -> String {
+    static func getTitlePlusMessage(_ title: String?, str: String) -> String {
         let message = get(str)
         var ret = message
         if (title != nil) {

@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 
-public class TableItemView : UITableViewCell {
-    private struct Constants {
+open class TableItemView : UITableViewCell {
+    fileprivate struct Constants {
         static let TITLE_FONT: CGFloat = 16.0
         static let SUB_TEXT_FONT: CGFloat = 12.0
         static let PADDING: Int = 10
@@ -42,24 +42,24 @@ public class TableItemView : UITableViewCell {
          */
 
         mTitle.text = ""
-        mTitle.font = UIFont.systemFontOfSize(Constants.TITLE_FONT)
+        mTitle.font = UIFont.systemFont(ofSize: Constants.TITLE_FONT)
         mTitle.numberOfLines = 2
-        mTitle.lineBreakMode = NSLineBreakMode.ByTruncatingTail
+        mTitle.lineBreakMode = NSLineBreakMode.byTruncatingTail
         self.addSubview(mTitle)
         
         mSubText1.text = ""
-        mSubText1.font = UIFont.systemFontOfSize(Constants.SUB_TEXT_FONT)
+        mSubText1.font = UIFont.systemFont(ofSize: Constants.SUB_TEXT_FONT)
         self.addSubview(mSubText1)
 
         mSubText2.text = ""
-        mSubText2.font = UIFont.systemFontOfSize(Constants.SUB_TEXT_FONT)
+        mSubText2.font = UIFont.systemFont(ofSize: Constants.SUB_TEXT_FONT)
         self.addSubview(mSubText2)
 
         mDetail.text = ""
-        mDetail.font = UIFont.systemFontOfSize(Constants.SUB_TEXT_FONT)
-        mDetail.textColor = UIColor.grayColor()
+        mDetail.font = UIFont.systemFont(ofSize: Constants.SUB_TEXT_FONT)
+        mDetail.textColor = UIColor.gray
         mDetail.numberOfLines = 2
-        mDetail.lineBreakMode = NSLineBreakMode.ByTruncatingTail
+        mDetail.lineBreakMode = NSLineBreakMode.byTruncatingTail
         self.addSubview(mDetail)
     }
     
@@ -67,7 +67,7 @@ public class TableItemView : UITableViewCell {
         super.init(coder: coder)
     }
     
-    override public func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         let width = self.bounds.width
         let height = self.bounds.height
@@ -107,14 +107,14 @@ public class TableItemView : UITableViewCell {
         //Log.d("layoutSubView " + String(hash) + ". " + String(y + Int(mDetail.frame.height)))
     }
     
-    override public func sizeThatFits(size: CGSize) -> CGSize {
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
         mTitle.sizeToFit()
         mDetail.sizeToFit()
         let ret: CGSize = CGSize(width: size.width, height: calcHeight())
         return ret
     }
     
-    private func calcHeight() -> CGFloat {
+    fileprivate func calcHeight() -> CGFloat {
         var height:CGFloat = 0.0
         let subHeight = CGFloat(Constants.SUB_TEXT_FONT)
         height += CGFloat(Constants.PADDING * 2)
@@ -128,18 +128,18 @@ public class TableItemView : UITableViewCell {
         return height
     }
     
-    public static func getHeight() -> CGFloat {
+    open static func getHeight() -> CGFloat {
         let text = "temp" as NSString
         var height:CGFloat = 0.0
-        height += text.sizeWithAttributes([NSFontAttributeName: UIFont.systemFontOfSize(Constants.TITLE_FONT)]).height
-        let size = text.sizeWithAttributes([NSFontAttributeName: UIFont.systemFontOfSize(Constants.SUB_TEXT_FONT)])
+        height += text.size(attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: Constants.TITLE_FONT)]).height
+        let size = text.size(attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: Constants.SUB_TEXT_FONT)])
         height += size.height * 2
         height += CGFloat(Constants.PADDING * 2)
         height += CGFloat(Constants.GAP_S + Constants.GAP_L)
         return height
     }
     
-    public func setMark(text: String) {
+    open func setMark(_ text: String) {
         let size = text.characters.count
         var r: CGFloat = 0
         var g: CGFloat = 0
@@ -147,7 +147,7 @@ public class TableItemView : UITableViewCell {
         if (size <= 0) {
             //mMark1.text = ""
             //mMark2.text = ""
-            mThumb.backgroundColor = UIColor.lightGrayColor()
+            mThumb.backgroundColor = UIColor.lightGray
             return
         }
 

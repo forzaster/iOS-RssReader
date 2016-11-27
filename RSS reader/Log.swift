@@ -11,7 +11,7 @@ import Foundation
 class Log {
     static let mDebug = false
     
-    static func d(message: String) {
+    static func d(_ message: String) {
         if (mDebug) {
             print(message)
         }

@@ -10,13 +10,13 @@ import Foundation
 import UIKit
 
 protocol PArticleItemAdapter {
-    func getCount(section: Int) -> Int
+    func getCount(_ section: Int) -> Int
     
-    func getItemHeight(tableView: UITableView, indexPath: NSIndexPath) -> CGFloat
+    func getItemHeight(_ tableView: UITableView, indexPath: IndexPath) -> CGFloat
 
-    func getItemView(tableView: UITableView, indexPath: NSIndexPath) -> UITableViewCell
+    func getItemView(_ tableView: UITableView, indexPath: IndexPath) -> UITableViewCell
     
-    func didSelect(tableView: UITableView, indexPath: NSIndexPath) -> (String?, String?, String?)
+    func didSelect(_ tableView: UITableView, indexPath: IndexPath) -> (String?, String?, String?)
     
-    func update(callback: () -> Void)
+    func update(_ callback: @escaping () -> Void)
 }

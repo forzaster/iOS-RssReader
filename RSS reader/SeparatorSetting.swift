@@ -11,23 +11,23 @@ import UIKit
 
 class SeparatorSetting {
     
-    internal static func setTableView(tableView: UITableView) {
-        if (tableView.respondsToSelector(Selector("separatorInset"))) {
-            tableView.separatorInset = UIEdgeInsetsZero;
+    internal static func setTableView(_ tableView: UITableView) {
+        if (tableView.responds(to: #selector(getter: UITableViewCell.separatorInset))) {
+            tableView.separatorInset = UIEdgeInsets.zero;
         }
-        if (tableView.respondsToSelector(Selector("layoutMargins"))) {
-            tableView.layoutMargins = UIEdgeInsetsZero;
+        if (tableView.responds(to: #selector(getter: UIView.layoutMargins))) {
+            tableView.layoutMargins = UIEdgeInsets.zero;
         }
     }
-    internal static func setCell(cell: UITableViewCell) {
-        if (cell.respondsToSelector(Selector("separatorInset"))) {
-            cell.separatorInset = UIEdgeInsetsZero;
+    internal static func setCell(_ cell: UITableViewCell) {
+        if (cell.responds(to: #selector(getter: UITableViewCell.separatorInset))) {
+            cell.separatorInset = UIEdgeInsets.zero;
         }
-        if (cell.respondsToSelector(Selector("preservesSuperviewLayoutMargins"))) {
+        if (cell.responds(to: #selector(getter: UIView.preservesSuperviewLayoutMargins))) {
             cell.preservesSuperviewLayoutMargins = false;
         }
-        if (cell.respondsToSelector(Selector("layoutMargins"))) {
-            cell.layoutMargins = UIEdgeInsetsZero;
+        if (cell.responds(to: #selector(getter: UIView.layoutMargins))) {
+            cell.layoutMargins = UIEdgeInsets.zero;
         }
     }
 }

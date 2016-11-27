@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 
-public class WebButtons : UIView {
-    private struct Constants {
+open class WebButtons : UIView {
+    fileprivate struct Constants {
         static let BUTTON_WIDTH: CGFloat = 16.0
         static let BUTTON_HEIGHT: CGFloat = 20.0
         static let PADDING: Int = 0
@@ -19,15 +19,15 @@ public class WebButtons : UIView {
         static let EDGE_MARGIN_H: CGFloat = 0.0
     }
     
-    private let mLeftButton = WButton(isLeft: true)
-    private let mRightButton = WButton(isLeft: false)
-    private var mLeftCallback = {() -> Void in
+    fileprivate let mLeftButton = WButton(isLeft: true)
+    fileprivate let mRightButton = WButton(isLeft: false)
+    fileprivate var mLeftCallback = {() -> Void in
     }
-    private var mRightCallback = {() -> Void in
+    fileprivate var mRightCallback = {() -> Void in
     }
 
     init() {
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         setupButtons()
     }
     
@@ -36,7 +36,7 @@ public class WebButtons : UIView {
         setupButtons()
     }
     
-    override public func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         
         let width = self.bounds.width
@@ -50,20 +50,20 @@ public class WebButtons : UIView {
 
     }
     
-    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         Log.d("change " + keyPath!)
     }
     
-    func addClickEvent(leftCallback: () -> Void, rightCallback: () -> Void) {
+    func addClickEvent(_ leftCallback: @escaping () -> Void, rightCallback: @escaping () -> Void) {
         mLeftCallback = leftCallback
         mRightCallback = rightCallback
     }
     
-    func setEnable(isEnableLeft : Bool, isEnableRight: Bool) {
-        mLeftButton.enabled = isEnableLeft
+    func setEnable(_ isEnableLeft : Bool, isEnableRight: Bool) {
+        mLeftButton.isEnabled = isEnableLeft
         //mLeftButton.backgroundColor = isEnableLeft ? UIColor.blueColor() : UIColor.lightGrayColor()
         mLeftButton.updateColor()
-        mRightButton.enabled = isEnableRight
+        mRightButton.isEnabled = isEnableRight
         //mRightButton.backgroundColor = isEnableRight ? UIColor.redColor() : UIColor.lightGrayColor()
         mRightButton.updateColor()
     }
@@ -78,9 +78,9 @@ public class WebButtons : UIView {
         mRightCallback()
     }
     
-    private func setupButtons() {
-        mLeftButton.addTarget(self, action: #selector(WebButtons.onLeftClick), forControlEvents: UIControlEvents.TouchUpInside)
-        mRightButton.addTarget(self, action: #selector(WebButtons.onRightClick), forControlEvents: UIControlEvents.TouchUpInside)
+    fileprivate func setupButtons() {
+        mLeftButton.addTarget(self, action: #selector(WebButtons.onLeftClick), for: UIControlEvents.touchUpInside)
+        mRightButton.addTarget(self, action: #selector(WebButtons.onRightClick), for: UIControlEvents.touchUpInside)
         //mLeftButton.setTitle(Localization.getString(Localization.BACK), forState: .Normal)
         //mRightButton.setTitle(Localization.getString(Localization.FORWARD), forState: .Normal)
         //mLeftButton.backgroundColor = UIColor.lightGrayColor()
@@ -89,34 +89,34 @@ public class WebButtons : UIView {
         self.addSubview(mRightButton)
     }
     
-    private class WButton : UIButton {
+    fileprivate class WButton : UIButton {
         
-        private var mColor: CGColorRef
-        private let mLeftArrow: Bool
+        fileprivate var mColor: CGColor
+        fileprivate let mLeftArrow: Bool
         
         init(isLeft: Bool) {
-            mColor = UIColor.blackColor().CGColor
+            mColor = UIColor.black.cgColor
             mLeftArrow = isLeft
-            super.init(frame: CGRectZero)
+            super.init(frame: CGRect.zero)
             self.layer.cornerRadius = 5
             self.layer.borderColor = mColor
             self.layer.borderWidth = 1
-            self.layer.backgroundColor = UIColor.whiteColor().CGColor
+            self.layer.backgroundColor = UIColor.white.cgColor
 
-            self.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
-            self.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Disabled)
-            self.enabled = false
+            self.setTitleColor(UIColor.black, for: UIControlState())
+            self.setTitleColor(UIColor.lightGray, for: UIControlState.disabled)
+            self.isEnabled = false
             self.updateColor()
         }
         
         required init?(coder: NSCoder) {
-            mColor = UIColor.blackColor().CGColor
+            mColor = UIColor.black.cgColor
             mLeftArrow = false
             super.init(coder: coder)
         }
 
-        override func drawRect(rect: CGRect) {
-            super.drawRect(rect)
+        override func draw(_ rect: CGRect) {
+            super.draw(rect)
 
             let context = UIGraphicsGetCurrentContext()
 
@@ -125,23 +125,23 @@ public class WebButtons : UIView {
             let top: CGFloat = 8
             let side: CGFloat = 20
             
-            CGContextSetStrokeColorWithColor(context, mColor)
-            CGContextSetLineWidth(context, 2)
+            context?.setStrokeColor(mColor)
+            context?.setLineWidth(2)
             if (mLeftArrow) {
-                CGContextMoveToPoint(context, w - side, top)
-                CGContextAddLineToPoint(context, side, h / 2)
-                CGContextAddLineToPoint(context, w - side, h - top)
+                context?.move(to: CGPoint(x: w - side, y: top))
+                context?.addLine(to: CGPoint(x: side, y: h / 2))
+                context?.addLine(to: CGPoint(x: w - side, y: h - top))
             } else {
-                CGContextMoveToPoint(context, side, top)
-                CGContextAddLineToPoint(context, w - side, h / 2)
-                CGContextAddLineToPoint(context, side, h - top)
+                context?.move(to: CGPoint(x: side, y: top))
+                context?.addLine(to: CGPoint(x: w - side, y: h / 2))
+                context?.addLine(to: CGPoint(x: side, y: h - top))
             }
-            CGContextStrokePath(context)
+            context?.strokePath()
         }
         
         func updateColor() {
-            let color: CGColorRef = self.enabled ? UIColor.blackColor().CGColor : UIColor.lightGrayColor().CGColor
-            if (!CGColorEqualToColor(mColor, color)) {
+            let color: CGColor = self.isEnabled ? UIColor.black.cgColor : UIColor.lightGray.cgColor
+            if (mColor != color) {
                 mColor = color
                 self.layer.borderColor = mColor
                 setNeedsDisplay()
