@@ -21,7 +21,7 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
     
     fileprivate var mAdapter : PArticleItemAdapter?
     
-    fileprivate var mLoading : UIView?;
+    fileprivate var mLoading : Loading?;
     
     fileprivate var mRssAddController : RssAddController = RssAddController()
     
@@ -104,6 +104,7 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
                 FeedModelClient.sInstance.updateAll({
                     (ret: Int) -> Void in
                         Log.d("UpdateAll done")
+                        self.mLoading!.stopAnim()
                         self.mLoading!.isHidden = true
                         self.mTableView.reloadData()
                 })
@@ -223,12 +224,13 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     func showLoading() {
-        let anim = CABasicAnimation(keyPath: "transform.rotation.z")
-        anim.toValue = M_PI / 180 * 360
-        anim.duration = 2
-        anim.repeatCount = Float.infinity
-        mLoading!.layer.add(anim, forKey: "rotateAnimation")
+        //let anim = CABasicAnimation(keyPath: "transform.rotation.z")
+        //anim.toValue = M_PI / 180 * 360
+        //anim.duration = 2
+        //anim.repeatCount = Float.infinity
+        //mLoading!.layer.add(anim, forKey: "rotateAnimation")
         mLoading!.isHidden = false
+        mLoading!.startAnim()
     }
     
     func refresh() {
@@ -241,7 +243,7 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
                 self.mRefreshControl.endRefreshing()
                 Log.d("endRefresh")
                 self.mRefreshControl.attributedTitle = NSAttributedString(string: Localization.get(Localization.PULL_TO_UPDATE))
-                
+                self.mLoading!.stopAnim()
                 self.mLoading!.isHidden = true
                 self.mTableView.reloadData()
             })

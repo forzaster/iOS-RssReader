@@ -145,7 +145,7 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
                     let range2 = mime!.range(of: "rss", options: .caseInsensitive)
                      if ((range1 != nil && !range1!.isEmpty) && (range2 != nil && !range2!.isEmpty)) {
                         //Log.d(NSString(data:data!, encoding:NSUTF8StringEncoding) as! String)
-                        var xmlString = NSString(data:data!, encoding:String.Encoding.utf8.rawValue) as! String
+                        var xmlString = NSString(data:data!, encoding:String.Encoding.utf8.rawValue)! as String
                         xmlString = "<pre>" + xmlString + "</pre>"
                         //self.mWebView.loadData(data!, MIMEType: "text/xml", textEncodingName: "utf-8", baseURL: nil)
                         self.mWebView.loadHTMLString(xmlString, baseURL: URL(string: url!))
@@ -179,7 +179,7 @@ class WebViewController: UIViewController, UIWebViewDelegate, UITextFieldDelegat
                 HttpGetClient().get(newUrl!,
                     callback: {(data: Data?, response: HTTPURLResponse?, error: NSError?) -> Void in
                         if (response != nil && response!.statusCode == 200 && data != nil) {
-                            let xmlString = NSString(data:data!, encoding:String.Encoding.utf8.rawValue) as! String
+                            let xmlString = NSString(data:data!, encoding:String.Encoding.utf8.rawValue)! as String
                             Log.d("result = " + xmlString)
                             self.mWebView.loadHTMLString("<pre>" + xmlString + "</pre>", baseURL: URL(string: newUrl!))
                         }

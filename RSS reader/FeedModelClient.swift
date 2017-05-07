@@ -192,7 +192,7 @@ class FeedModelClient {
         article.detail = obj.detail
         article.date = obj.date as Date
         if let watched = obj.watched {
-            article.watched = watched as Bool
+            article.watched = watched as! Bool
         } else {
             article.watched = false
         }
