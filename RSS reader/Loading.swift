@@ -11,8 +11,10 @@ import UIKit
 
 open class Loading : UIView {
     fileprivate var mDisplayLink : CADisplayLink? = nil
+    fileprivate var mStartAngle : CGFloat = CGFloat(-Double.pi/2.0)
     fileprivate var mEndAngle : CGFloat = CGFloat(-Double.pi/2.0)
     fileprivate var mDelta: CGFloat = CGFloat(-1)
+    fileprivate var mIsEndAngleInc: Bool = true
     
     init() {
         super.init(frame: CGRect.zero)
@@ -46,7 +48,7 @@ open class Loading : UIView {
         context.setFillColor(UIColor.gray.cgColor)
         context.move(to: center)
         context.addArc(center: center, radius: r,
-                       startAngle: CGFloat(-Double.pi/2.0), endAngle: mEndAngle,
+                       startAngle: mStartAngle, endAngle: mEndAngle,
                        clockwise: false)
         context.fillPath()
 /*
@@ -69,8 +71,10 @@ open class Loading : UIView {
     
     func startAnim() {
         mDisplayLink = CADisplayLink(target: self, selector: #selector(update))
-        mDisplayLink?.add(to: .current, forMode: .defaultRunLoopMode)
+        mDisplayLink?.add(to: .current, forMode: .commonModes)
+        mStartAngle = CGFloat(-Double.pi/2.0)
         mEndAngle = CGFloat(-Double.pi/2.0)
+        mIsEndAngleInc = true
         setNeedsDisplay()
     }
     
@@ -80,9 +84,20 @@ open class Loading : UIView {
             let d = TIME / (mDisplayLink?.duration)!
             mDelta = CGFloat(Double.pi * 2.0 / d)
         }
-        mEndAngle += mDelta
-        if (mEndAngle > CGFloat(Double.pi*3.0/2.0)) {
-            mEndAngle = CGFloat(-Double.pi/2.0)
+        if (mIsEndAngleInc) {
+            mEndAngle += mDelta
+            if (mEndAngle > CGFloat(Double.pi*3.0/2.0)) {
+                mEndAngle = CGFloat(Double.pi*3.0/2.0)
+                mIsEndAngleInc = false
+            }
+        } else {
+            mStartAngle += mDelta
+            if (mStartAngle > CGFloat(Double.pi*3.0/2.0)) {
+                mStartAngle = CGFloat(-Double.pi/2.0)
+                mEndAngle = CGFloat(-Double.pi/2.0)
+                mIsEndAngleInc = true
+            }
+            
         }
         setNeedsDisplay()
     }

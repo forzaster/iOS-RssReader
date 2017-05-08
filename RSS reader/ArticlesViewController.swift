@@ -42,7 +42,7 @@ class ArticlesViewController: UIViewController, UITableViewDelegate, UITableView
         mLoading = Loading()
         let barFrame = UIApplication.shared.statusBarFrame
         let navBarFrame = self.navigationController?.navigationBar.frame
-        mLoading!.frame = CGRect(x: barFrame.width - 30, y: barFrame.height + (navBarFrame?.height)!, width: 30, height: 30)
+        mLoading!.frame = CGRect(x: barFrame.width - 35, y: barFrame.height + (navBarFrame?.height)!, width: 35, height: 35)
 
         self.view.addSubview(mLoading!)
         mLoading!.isHidden = true
